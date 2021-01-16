@@ -8,48 +8,66 @@ class TeammateService():
     """
         Get mutual teammates from mongo + other functionality
     """
-    def __init__(self, p_one, p_two):
-        # TODO make code 'scaleable':
-        #   allow for calculation of mut. teammates 
-        #   for a variable number of players
-        self.p_one = p_one
-        self.p_two = p_two
-    
-    def calculate_mutual_teammates(self):
-        player_docs = players.find({
-            "_normalized_name": {
-                '$in': [self.p_one, self.p_two]
-            }
-        })
-        try:
-            p1_doc = player_docs[0]
-            p2_doc = player_docs[1]
-            #to do, catch index error properly
-        except IndexError:
-            logger.warning("Invalid players inputted")
-            return None
+    def __init__(self, names):
+        self.names = names
 
-        p1_tmtes_ids = set([p1['teammate_id'] for p1 in p1_doc['teammates']])
-        p2_tmtes_ids = set([p2['teammate_id'] for p2 in p2_doc['teammates']])
-        mutual_team_ids = p1_tmtes_ids.intersection(p2_tmtes_ids)
+    def generate_players(self):
 
-        mutual_teammate_docs = players.find({
+        players = []
+        for name in self.names:
+
+            player_dict = {}
+            self.preprocessed_name = self._preprocess_name(name)
+            player_doc = self._get_player_doc()
+            if not player_doc:
+                logger.error(f"Invalid player name: {name}. Returning Error")
+                # raise Exception here - as can be confused with two players
+                #  with no mutual teammates
+                return None
+            player_dict['p_id'] = player_doc['_id']
+            player_dict['p_name'] = player_doc['name']
+            player_dict['teammate_ids'] = self._get_teammate_ids(player_doc)
+            players.append(Player(**player_dict))
+
+        return players
+
+    def _preprocess_name(self, name):
+        """
+        TODO: Ensure name is in correct formate to be searched in mongo,
+        as far as I know it only has to be lowered
+        """
+        return name.lower()
+
+    def _get_player_doc(self):
+        """
+        TODO: add check if we find more than one playerdoc
+        this would occur if there were two players of the
+        same name
+        """
+        return players.find_one({'_normalized_name': self.preprocessed_name})
+
+    def _get_teammate_ids(self, player_doc):
+        return set([t['teammate_id'] for t in player_doc['teammates']])
+
+
+class Player():
+
+    def __init__(self, p_name, p_id, teammate_ids):
+        self.p_name = p_name
+        self.p_id = p_id
+        self.teammate_ids = teammate_ids
+
+    def generate_mutual_teammates(self, p_two):
+        mutual_tmmte_ids = self.teammate_ids.intersection(p_two.teammate_ids)
+        mutual_tmmte_docs = players.find({
             "_id": {
-                "$in": list(mutual_team_ids)
+                "$in": list(mutual_tmmte_ids)
             }
         })
-        return [mt["name"] for mt in mutual_teammate_docs]
+        return [mt["name"] for mt in mutual_tmmte_docs]
 
-        def santise_name(name):
-            """
-            Ensure name is in correct formate to be searched in mongo,
-            as far as I know it only has to be lowered
-            """
-            return name.lower()
-
-# class Player():
-#     def calculate_teammate_meta_data():
-#         """Calcualate extra info for the teammates - currently
-#         we only have info of where the
-#         """
-#         pass
+    def calculate_teammate_meta_data():
+        """Calcualate extra info for the teammates - currently
+        we only have info of where the
+        """
+        pass

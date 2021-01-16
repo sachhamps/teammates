@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from search_players.forms import SearchPlayersForm
 from urllib.parse import urlencode
-from utils.utils import TeammateService
+from utils.utils import Player, TeammateService
 
 
 
@@ -26,16 +26,23 @@ def home(request):
     return render(request, 'search_players/home.html', ctx)
 
 def return_search_results(request):
-    teammate_service = TeammateService(
+    teammate_service = TeammateService([
         request.GET.get('p_one'),
         request.GET.get('p_two')
-    )
-    teammates = teammate_service.calculate_mutual_teammates()
-    if teammates is None:
+    ])
+    players = teammate_service.generate_players()
+    # teammates = teammate_service.calculate_mutual_teammates()
+    if not players:
         ctx = {
             'header': 'Error In Player Search'
         }
         return render(request, 'search_players/results.html', ctx)
+
+    # generalise logic such that we can find the mutual teammates of
+    # multiple players
+    p_one = players[0]
+    p_two = players[1]
+    teammates = p_one.generate_mutual_teammates(p_two)
     ctx = {
         'teammates': teammates,
         'header': 'Search Players Results'
