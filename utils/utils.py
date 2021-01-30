@@ -24,10 +24,13 @@ class TeammateService():
                 # raise Exception here - as can be confused with two players
                 #  with no mutual teammates
                 return None
-            player_dict['p_id'] = player_doc['_id']
-            player_dict['p_name'] = player_doc['name']
-            player_dict['teammate_ids'] = self._get_teammate_ids(player_doc)
-            player_dict['team_ids'] = player_doc['team_ids']
+
+            player_dict = {
+                'p_id' : player_doc['_id'],
+                'p_name' : player_doc['name'],
+                'teammate_ids' : self._get_teammate_ids(player_doc),
+                'team_ids' : player_doc['team_ids'],
+            }
             players.append(Player(**player_dict))
 
         return players

@@ -1,15 +1,21 @@
 {% extends "search_players/base.html"%}
 {% block content %}
+<head>
+    <link href="../../static/search_players/main.css" rel="stylesheet">
+</head>
+
     <div class="text-center mb-4" style="padding-top:10px;padding-bottom:10px">
-        <h1>Results</h1>
+        <h1 style="padding-top:20px;padding-bottom:30px">Results</h1>
             {% if teammates %}
-            {% for t in teammates%}
-                <p>{{t}}</p>
-            {% endfor %}
-            {% else %}
-            <h2>Error. One (or both) players havent played in the premier league</h2>
-            {% endif %}
-            <a href="/">Back to Search</a>
+            <div class="offcenter">
+                {% for t in teammates%}
+                    <h2 style="padding-top:20px;padding-bottom:30px">{{t}}</h2>
+                {% endfor %}
+                {% else %}
+                <h2>Error. One (or both) players havent played in the premier league</h2>
+                {% endif %}
+                <a href="/">Back to Search</a>
+            </div>
     </div>
 
 {% endblock content %}

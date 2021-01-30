@@ -7,7 +7,7 @@
     <body>
         <!-- potentially make form a get request and add an 
         action='/url path' if we want to hide the search data -->
-        <form class="form-signin" method="post">
+        <form class="form-signin" method="post" autocomplete="off">
             {% csrf_token %}
           <div class="text-center mb-4">
             <img class="mb-4" src="../../static/search_players/logo.png" alt="" width="128" height="128">
