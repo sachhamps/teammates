@@ -27,6 +27,7 @@ class TeammateService():
             player_dict['p_id'] = player_doc['_id']
             player_dict['p_name'] = player_doc['name']
             player_dict['teammate_ids'] = self._get_teammate_ids(player_doc)
+            player_dict['team_ids'] = player_doc['team_ids']
             players.append(Player(**player_dict))
 
         return players
@@ -36,7 +37,7 @@ class TeammateService():
         TODO: Ensure name is in correct formate to be searched in mongo,
         as far as I know it only has to be lowered
         """
-        return name.lower()
+        return name.lower().strip()
 
     def _get_player_doc(self):
         """
@@ -50,12 +51,15 @@ class TeammateService():
         return set([t['teammate_id'] for t in player_doc['teammates']])
 
 
+
+
 class Player():
 
-    def __init__(self, p_name, p_id, teammate_ids):
+    def __init__(self, p_name, p_id, teammate_ids, team_ids):
         self.p_name = p_name
         self.p_id = p_id
         self.teammate_ids = teammate_ids
+        self.team_ids = team_ids
 
     def generate_mutual_teammates(self, p_two):
         mutual_tmmte_ids = self.teammate_ids.intersection(p_two.teammate_ids)
@@ -64,7 +68,7 @@ class Player():
                 "$in": list(mutual_tmmte_ids)
             }
         })
-        return [mt["name"] for mt in mutual_tmmte_docs]
+        return [mt["name"].title() for mt in mutual_tmmte_docs]
 
     def calculate_teammate_meta_data():
         """Calcualate extra info for the teammates - currently

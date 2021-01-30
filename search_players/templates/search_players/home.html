@@ -10,29 +10,26 @@
         <form class="form-signin" method="post">
             {% csrf_token %}
           <div class="text-center mb-4">
-            <!-- <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72"> -->
-            <h1 class="h3 mb-3 font-weight-normal">Search Players</h1>
-            <p></p>
+            <img class="mb-4" src="../../static/search_players/logo.png" alt="" width="128" height="128">
+            <h1 class="h3 mb-3 font-weight-normal">Mutual Teammates</h1>
+            <p>Search two players who have played in the Premier League and find out who their mutual teammates were</p>
+
           </div>
-    
+
           <div class="form-label-group">
             <!-- <input id="inputPlayer1" class="form-control" placeholder="Player 1" required autofocus> -->
             {{ form.p_one }}
-            <label for="inputPlayer1">Player 1</label>
+            <label for="inputPlayer1" required autofocus>Player 1</label>
           </div>
     
           <div class="form-label-group">
             {{ form.p_two }}
             <!-- <input id="inputPlayer2" class="form-control" placeholder="Player 2" required> -->
-            <label for="inputPlayer2">Player 2</label>
+            <label for="inputPlayer2" required autofocus>Player 2</label>
           </div>
     
           <button class="btn btn-lg btn-primary btn-block" type="submit">Search!</button>
           <p class="mt-5 mb-3 text-muted text-center">&copy; 2021</p>
         </form>
-        {{teammates}}
-        <!-- {% for teammate in teammates %}
-          <p>{{ teammate }}</p>
-        {% endfor %} -->
       </body>
 {% endblock content %}
