@@ -37,7 +37,7 @@ class TeammateService():
 
     def _preprocess_name(self, name):
         """
-        TODO: Ensure name is in correct formate to be searched in mongo,
+        TODO: Ensure name is in correct format to be searched in mongo,
         as far as I know it only has to be lowered
         """
         return name.lower().strip()
